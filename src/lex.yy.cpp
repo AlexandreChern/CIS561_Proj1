@@ -12,6 +12,7 @@
 #define REFLEX_OPTION_bison_cc_namespace  yy
 #define REFLEX_OPTION_bison_cc_parser     parser
 #define REFLEX_OPTION_bison_locations     true
+#define REFLEX_OPTION_header_file         "lex.yy.h"
 #define REFLEX_OPTION_lex                 yylex
 #define REFLEX_OPTION_lexer               Lexer
 #define REFLEX_OPTION_namespace           yy
