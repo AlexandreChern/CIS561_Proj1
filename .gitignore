@@ -1,0 +1,9 @@
+# MacOS files
+.DS_store
+
+# Object files
+*.o
+
+# 
+lex.yy.cpp
+lex.yy.h
