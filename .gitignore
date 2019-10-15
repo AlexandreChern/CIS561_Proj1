@@ -7,4 +7,4 @@
 # compiled and output files 
 src/lex.yy.cpp
 src/lex.yy.h
-bin/
+bin/*

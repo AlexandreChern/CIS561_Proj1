@@ -50,6 +50,8 @@ std::string BAD_NL_STR =
    */ 
 %x comment
 %x linecomment
+%x triplequote
+%x singlequote
 
 %%
 
@@ -69,7 +71,7 @@ std::string BAD_NL_STR =
     * JFlex/Cup do not let you do this in Java.
     * Here are a few ... there are more. 
     */
-[-+=*/{}{}[],.;<>]  { return text()[0]; }
+[-+*/><{}=(),;.:]  { return text()[0]; }
 
   /* Keywords are essentially another kind of punctuation,
    * but since they also match the identifier pattern, we
@@ -90,21 +92,26 @@ while	{return parser::token::WHILE;}
 typecase	{return parser::token::TYPECASE;}
 
 
+and 	{return parser::token::AND;}
+not	{return parser::token::NOT;}
+Nothing	{return parser::token::NOTHING;}
+
   /* predefined identifiers */
 
 
 
-string	{return parser::token::STRING;}
-Int	{return parser::token::INT;}
-Obj	{return parser::token::OBJ;}
-Boolean	{return parser::token::BOOLEAN;}
-true	{return parser::token::TRUE;}
-false	{return parser::token::FALSE;}
+
+//String	{return parser::token::STRING;}
+//Int	{return parser::token::INT;}
+//Obj	{return parser::token::OBJ;}
+//Boolean	{return parser::token::BOOLEAN;}
+//true	{return parser::token::TRUE;}
+//false	{return parser::token::FALSE;}
 and	{return parser::token::AND;}
 or	{return parser::token::OR;}
 not	{return parser::token::NOT;}
-Nothing	{return parser::token::NOTHING;}
-none	{return parser::token::NONE;}
+//Nothing	{return parser::token::NOTHING;}
+//none	{return parser::token::NONE;}
 
 
 
@@ -120,8 +127,10 @@ none	{return parser::token::NONE;}
     * 'strdup' the value returned by 'text()', or else it will
     * be clobbered by subsequent calls. 
     */
-
+	/* INTEGER */
 [0-9]+                   { yylval.num = atoi(text()); return parser::token::INT_LIT; }
+
+	/* IDENTIFIER */
 [a-zA-Z_][a-zA-Z0-9_]*		{yylval.num=atoi(text()); return parser::token::IDENT;}
   /* You *can* write a one-line regular expression for matching a quoted string,
    * but you probably can't read it.  (I can't read mine.)  Scanner states and
@@ -140,8 +149,28 @@ none	{return parser::token::NONE;}
 <comment>[*][^/] { ; }
 <comment>[*][/]  { start(INITIAL); }
 
-[/][/]	{start(linecomment);}
+
+    /* Single-line comment */
+\/\/	{start(linecomment);}
+<linecomment>. {;}
 <linecomment>\n { start(INITIAL);}
+
+
+    /* Triple quoted string*/
+
+[\"][\"][\"] 	{start(triplequote);}
+<triplequote>[.] {yylval.str = strdup(text()); return parser::token::STRING_LIT;}
+<triplequote>\n  {start(INITIAL);}
+
+	/*Single quoted string*/
+
+[\"] 		{start(singlequote);}
+<singlequote>[.] {yylval.str = strdup(text()); return parser::token::STRING_LIT;}
+<singlequote>[\"] {start(INITIAL);}
+
+
+
+
 
 .  {   report::error("Unexpected character '" + std::string(text()) + "'" +
        " at line " + std::to_string(lineno()) +
