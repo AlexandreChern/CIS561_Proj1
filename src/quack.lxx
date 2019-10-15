@@ -107,9 +107,9 @@ Nothing	{return parser::token::NOTHING;}
 //Boolean	{return parser::token::BOOLEAN;}
 //true	{return parser::token::TRUE;}
 //false	{return parser::token::FALSE;}
-and	{return parser::token::AND;}
-or	{return parser::token::OR;}
-not	{return parser::token::NOT;}
+//and	{return parser::token::AND;}
+//or	{return parser::token::OR;}
+//not	{return parser::token::NOT;}
 //Nothing	{return parser::token::NOTHING;}
 //none	{return parser::token::NONE;}
 
@@ -159,14 +159,14 @@ not	{return parser::token::NOT;}
     /* Triple quoted string*/
 
 [\"][\"][\"] 	{start(triplequote);}
+<triplequote>[\"][\"][\"]  {start(INITIAL);}
 <triplequote>[.] {yylval.str = strdup(text()); return parser::token::STRING_LIT;}
-<triplequote>\n  {start(INITIAL);}
 
 	/*Single quoted string*/
 
 [\"] 		{start(singlequote);}
-<singlequote>[.] {yylval.str = strdup(text()); return parser::token::STRING_LIT;}
 <singlequote>[\"] {start(INITIAL);}
+<singlequote>[.] {yylval.str = strdup(text()); return parser::token::STRING_LIT;}
 
 
 
