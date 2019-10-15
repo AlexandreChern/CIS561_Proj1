@@ -160,13 +160,13 @@ Nothing	{return parser::token::NOTHING;}
 
 [\"][\"][\"] 	{start(triplequote);}
 <triplequote>[\"][\"][\"]  {start(INITIAL);}
-<triplequote>[.] {yylval.str = strdup(text()); return parser::token::STRING_LIT;}
+<triplequote>[.]* {yylval.str = strdup(text()); return parser::token::STRING_LIT;}
 
 	/*Single quoted string*/
 
 [\"] 		{start(singlequote);}
 <singlequote>[\"] {start(INITIAL);}
-<singlequote>[.] {yylval.str = strdup(text()); return parser::token::STRING_LIT;}
+<singlequote>[.]* {yylval.str = strdup(text()); return parser::token::STRING_LIT;}
 
 
 
